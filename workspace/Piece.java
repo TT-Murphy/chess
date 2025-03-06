@@ -50,7 +50,32 @@ public class Piece {
     //return a list of every square that is "controlled" by this piece. A square is controlled
     //if the piece capture into it legally.
     public ArrayList<Square> getControlledSquares(Square[][] board, Square start) {
-     return null;
+    	ArrayList<Square> moves = new ArrayList<Square>();
+      if (start.getRow()+1<8 && start.getCol()+2<8){
+        moves.add(board[start.getRow()+1][ start.getCol()+2]);
+      }
+      if (start.getRow()-1>0 && start.getCol()+2<8){
+        moves.add(board[start.getRow()-1][ start.getCol()+2]);
+      }
+      if (start.getRow()+1<8 && start.getCol()-2>0){
+        moves.add(board[start.getRow()+1][ start.getCol()-2]);
+      }
+      if (start.getRow()-1>0 && start.getCol()-2>0){
+        moves.add(board[start.getRow()-1][ start.getCol()-2]);
+      }
+      if (start.getRow()+2<8 && start.getCol()+1<8){
+        moves.add(board[start.getRow()+2][ start.getCol()+1]);
+      }
+      if (start.getRow()-2>0 && start.getCol()+1<8){
+        moves.add(board[start.getRow()-2][ start.getCol()+1]);
+      }
+      if (start.getRow()+2<8 && start.getCol()-1>0){
+        moves.add(board[start.getRow()+2][ start.getCol()-1]);
+      }
+      if (start.getRow()-2>0 && start.getCol()-1>0){
+        moves.add(board[start.getRow()-2][ start.getCol()-1]);
+      }
+      return moves;
     }
     
 
@@ -60,7 +85,50 @@ public class Piece {
     //returns an arraylist of squares which are legal to move to
     //please note that your piece must have some sort of logic. Just being able to move to every square on the board is not
     //going to score any points.
+
+    //the code below is for the knight piece
     public ArrayList<Square> getLegalMoves(Board b, Square start){
-    	return null;
+    	ArrayList<Square> moves = new ArrayList<Square>();
+      if ((start.getRow()+1<8 && start.getCol()+2<8) &&
+      ((b.getSquareArray()[start.getRow()+1][ start.getCol()+2].getOccupyingPiece() == null) ||
+      (this.getColor() != b.getSquareArray()[start.getRow()+1][ start.getCol()+2].getOccupyingPiece().getColor()))){
+        moves.add(b.getSquareArray()[start.getRow()+1][ start.getCol()+2]);
+      }
+      if ((start.getRow()-1>=0 && start.getCol()+2<8) &&
+      ((b.getSquareArray()[start.getRow()-1][ start.getCol()+2].getOccupyingPiece() == null) ||
+      (this.getColor() != b.getSquareArray()[start.getRow()-1][ start.getCol()+2].getOccupyingPiece().getColor()))){
+        moves.add(b.getSquareArray()[start.getRow()-1][ start.getCol()+2]);
+      }
+      if ((start.getRow()+1<8 && start.getCol()-2>=0) &&
+      ((b.getSquareArray()[start.getRow()+1][ start.getCol()-2].getOccupyingPiece() == null) ||
+      (this.getColor() != b.getSquareArray()[start.getRow()+1][ start.getCol()-2].getOccupyingPiece().getColor()))){
+        moves.add(b.getSquareArray()[start.getRow()+1][ start.getCol()-2]);
+      }
+      if ((start.getRow()-1>=0 && start.getCol()-2>=0) &&
+      ((b.getSquareArray()[start.getRow()-1][ start.getCol()-2].getOccupyingPiece() == null) ||
+      (this.getColor() != b.getSquareArray()[start.getRow()-1][ start.getCol()-2].getOccupyingPiece().getColor()))){
+        moves.add(b.getSquareArray()[start.getRow()-1][ start.getCol()-2]);
+      }
+      if ((start.getRow()+2<8 && start.getCol()+1<8) &&
+      ((b.getSquareArray()[start.getRow()+2][ start.getCol()+1].getOccupyingPiece() == null) ||
+      (this.getColor() != b.getSquareArray()[start.getRow()+2][ start.getCol()+1].getOccupyingPiece().getColor()))){
+        moves.add(b.getSquareArray()[start.getRow()+2][ start.getCol()+1]);
+      }
+      if ((start.getRow()-2>=0 && start.getCol()+1<8) &&
+      ((b.getSquareArray()[start.getRow()-2][ start.getCol()+1].getOccupyingPiece() == null) ||
+      (this.getColor() != b.getSquareArray()[start.getRow()-2][ start.getCol()+1].getOccupyingPiece().getColor()))){
+        moves.add(b.getSquareArray()[start.getRow()-2][ start.getCol()+1]);
+      }
+      if ((start.getRow()+2<8 && start.getCol()-1>=0) &&
+      ((b.getSquareArray()[start.getRow()+2][ start.getCol()-1].getOccupyingPiece() == null) ||
+      (this.getColor() != b.getSquareArray()[start.getRow()+2][ start.getCol()-1].getOccupyingPiece().getColor()))){
+        moves.add(b.getSquareArray()[start.getRow()+2][ start.getCol()-1]);
+      }
+      if ((start.getRow()-2>=0 && start.getCol()-1>=0) &&
+      ((b.getSquareArray()[start.getRow()-2][ start.getCol()-1].getOccupyingPiece() == null) ||
+      (this.getColor() != b.getSquareArray()[start.getRow()-2][ start.getCol()-1].getOccupyingPiece().getColor()))){
+        moves.add(b.getSquareArray()[start.getRow()-2][ start.getCol()-1]);
+      }
+      return moves;
     }
 }

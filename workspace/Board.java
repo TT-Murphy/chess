@@ -92,10 +92,13 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 	//it's up to you how you wish to arrange your pieces.
     private void initializePieces() {
     	
-    	board[0][1].put(new Piece(true, RESOURCES_WKNIGHT_PNG));
-        board[0][0].put(new Piece(true, RESOURCES_WKNIGHT_PNG));
-        board[7][7].put(new Piece(false, RESOURCES_BKNIGHT_PNG));
-        board[7][6].put(new Piece(false, RESOURCES_BKNIGHT_PNG));
+    	board[0][1].put(new Knight(false, RESOURCES_BKNIGHT_PNG));
+        board[0][0].put(new Knight(false, RESOURCES_BKNIGHT_PNG));
+        board[7][7].put(new Knight(true, RESOURCES_WKNIGHT_PNG));
+        board[7][6].put(new Knight(true, RESOURCES_WKNIGHT_PNG));
+        board[1][0].put(new Pawn(false, RESOURCES_BPAWN_PNG));
+        board[0][4].put(new King(false, RESOURCES_BKING_PNG));
+        board[7][5].put(new King(true, RESOURCES_WKING_PNG));
 
     }
 
@@ -164,31 +167,77 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     //should move the piece to the desired location only if this is a legal move.
     //use the pieces "legal move" function to determine if this move is legal, then complete it by
     //moving the new piece to it's new board location. 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        Square endSquare = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
+    // @Override
+    // public void mouseReleased(MouseEvent e) {
+    //     Square endSquare = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
         
-        for(Square [] row: board) {
-        	for(Square s: row) {
-        		s.setBorder(null);
+    //     for(Square [] row: board) {
+    //     	for(Square s: row) {
+    //     		s.setBorder(null);
      
-        	}
+    //     	}
         	
-        }
-        
-            for (int i = 0; i< currPiece.getLegalMoves(this, fromMoveSquare).size(); i++){
-                if (currPiece.getLegalMoves(this, fromMoveSquare).get(i) == endSquare){
-                    endSquare.put(currPiece);
-                    fromMoveSquare.put(null);
-                    whiteTurn = !whiteTurn;
-                }
-            }
+    //     }
+    //         if (currPiece != null){
+    //             for (int i = 0; i< currPiece.getLegalMoves(this, fromMoveSquare).size(); i++){
+    //                 if (currPiece.getLegalMoves(this, fromMoveSquare).get(i) == endSquare){
+    //                     endSquare.put(currPiece);
+    //                     fromMoveSquare.put(null);
+
+    //                     if(this.isInCheck(whiteTurn)){
+    //                         fromMoveSquare.put(currPiece);
+    //                         endSquare.put(null);
+    //                     }
+    //                     else{
+    //                     whiteTurn = !whiteTurn;
+    //                     }
+    //                 }
+    //             }
+    //         }
         
        
-        fromMoveSquare.setDisplay(true);
-        currPiece = null;
-        repaint();
+    //     fromMoveSquare.setDisplay(true);
+    //     currPiece = null;
+    //     repaint();
+    // }
+    @Override
+public void mouseReleased(MouseEvent e) {
+    Square endSquare = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
+
+    // Reset previous highlights
+    for (Square[] row : board) {
+        for (Square s : row) {
+            s.setBorder(null);
+        }
     }
+
+    if (currPiece != null) {
+
+        for (Square legalMove : currPiece.getLegalMoves(this, fromMoveSquare)) {
+            if (legalMove == endSquare) {
+                // Store original state in case we need to revert
+                Piece capturedPiece = endSquare.getOccupyingPiece();
+                fromMoveSquare.put(null);
+                endSquare.put(currPiece);
+
+                // Check if move resolves check
+                if (this.isInCheck(whiteTurn)) {
+                    // Move didn't resolve check, revert it
+                    fromMoveSquare.put(currPiece);
+                    endSquare.put(capturedPiece);
+                } else {
+                    // Move is valid, switch turn
+                    whiteTurn = !whiteTurn;
+                }
+                break;
+            }
+        }
+    }
+
+    fromMoveSquare.setDisplay(true);
+    currPiece = null;
+    repaint();
+}
 
 
     @Override
@@ -219,6 +268,26 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
     @Override
     public void mouseExited(MouseEvent e) {
+    }
+
+    //precondition - the board is initialized and contains a king of either color. The boolean kingColor corresponds to the color of the king we wish to know the status of.
+    //postcondition - returns true of the king is in check and false otherwise.
+    public boolean isInCheck(boolean kingColor){
+        for(int i = 0; i<board.length; i++){
+            for (int j = 0; j<board[i].length;j++){
+                if(board[i][j].getOccupyingPiece() !=null && 
+                board[i][j].getOccupyingPiece().getColor()!= kingColor){
+                    ArrayList<Square> x = board[i][j].getOccupyingPiece().getControlledSquares(board, board[i][j]);
+                    for (int k = 0; k<x.size();k++){
+                        if (x.get(k).getOccupyingPiece() instanceof King && x.get(k).getOccupyingPiece().getColor() != board[i][j].getOccupyingPiece().getColor()){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
 }
